@@ -1,0 +1,17 @@
+    ~~~~~~~~~~~~~~~~~~^^
+  File "/home/went/vscode/hunt/ui/question_frame.py", line 145, in load_question
+    self.controller.show_frame("ResultsFrame")
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/went/vscode/hunt/main.py", line 90, in show_frame
+    frame.update_results(score, total, mode)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/home/went/vscode/hunt/ui/results_frame.py", line 160, in update_results
+    self.start_confetti()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "/home/went/vscode/hunt/ui/results_frame.py", line 193, in start_confetti
+    self._animate_confetti()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/went/vscode/hunt/ui/results_frame.py", line 244, in _animate_confetti
+    widget.configure(bg=self._fade_color(p['color'], p['life']))
+                                         ~^^^^^^^^^
+KeyError: 'color'
