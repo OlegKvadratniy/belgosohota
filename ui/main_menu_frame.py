@@ -70,7 +70,7 @@ class MainMenuFrame(ctk.CTkFrame):
         # Exam button with special styling
         self.exam_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
         self.exam_frame.grid(row=2, column=0, pady=(30, 0), sticky="ew")
-        self.exam_frame.grid_columnconfigure((0, 1), weight=1)
+        self.exam_frame.grid_columnconfigure(0, weight=1)
         
         self.exam_button = ctk.CTkButton(
             self.exam_frame,
@@ -84,21 +84,7 @@ class MainMenuFrame(ctk.CTkFrame):
             border_color=("#B44A48", "#D35B58"),
             corner_radius=15
         )
-        self.exam_button.grid(row=0, column=0, padx=(20, 5), pady=10, sticky="ew")
-        
-        self.test_button = ctk.CTkButton(
-            self.exam_frame,
-            text="🔬 Тест (2 вопроса)\nПроверить анимацию",
-            command=self.start_test,
-            height=70,
-            font=ctk.CTkFont(size=16, weight="bold"),
-            fg_color=("gray70", "gray30"),
-            hover_color=("gray60", "gray40"),
-            border_width=2,
-            border_color=("gray60", "gray40"),
-            corner_radius=15
-        )
-        self.test_button.grid(row=0, column=1, padx=(5, 20), pady=10, sticky="ew")
+        self.exam_button.grid(row=0, column=0, padx=20, pady=10, sticky="ew")
         
         # All questions button
         self.all_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
@@ -180,12 +166,6 @@ class MainMenuFrame(ctk.CTkFrame):
         self.stop_confetti()
         self.controller.question_loader.current_mode = ('exam', None)
         self.controller.current_mode_name = 'exam'
-        self.controller.show_frame("QuestionFrame")
-
-    def start_test(self):
-        self.stop_confetti()
-        self.controller.question_loader.current_mode = ('test', None)
-        self.controller.current_mode_name = 'test'
         self.controller.show_frame("QuestionFrame")
 
     def start_all_questions(self):
