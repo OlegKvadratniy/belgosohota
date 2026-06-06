@@ -42,7 +42,8 @@ class MainMenuFrame(ctk.CTkFrame):
         # Topic buttons with icons and better styling
         self.topic_buttons_frame = ctk.CTkFrame(self.main_container, fg_color="transparent")
         self.topic_buttons_frame.grid(row=1, column=0, sticky="ew")
-        self.topic_buttons_frame.grid_columnconfigure((0,1), weight=1, uniform="topic")
+        self.topic_buttons_frame.grid_columnconfigure((0,1,2,3), weight=1, uniform="topic")
+        self.topic_buttons_frame.grid_rowconfigure((0,1), weight=1, uniform="topic_row")
         
         # Topic data with emojis
         topics = [
