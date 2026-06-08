@@ -28,7 +28,7 @@ class QuestionFrame(ctk.CTkFrame):
         # Progress info frame
         self.progress_info = ctk.CTkFrame(self.progress_frame, fg_color="transparent")
         self.progress_info.grid(row=0, column=0, sticky="ew")
-        self.progress_info.grid_columnconfigure((0,1,2), weight=1)
+        self.progress_info.grid_columnconfigure(0, weight=1)
         
         self.progress_label = ctk.CTkLabel(
             self.progress_info,
@@ -37,19 +37,6 @@ class QuestionFrame(ctk.CTkFrame):
             text_color=("#1f6aa5", "#4dabf7")
         )
         self.progress_label.grid(row=0, column=0, sticky="w", padx=10)
-        
-        # Help button for explanation
-        self.help_button = ctk.CTkButton(
-            self.progress_info,
-            text="❓ Помощь (X)",
-            command=self.toggle_explanation,
-            width=120,
-            height=30,
-            font=ctk.CTkFont(size=12),
-            fg_color=("gray70", "gray30"),
-            hover_color=("gray60", "gray40")
-        )
-        self.help_button.grid(row=0, column=2, sticky="e", padx=10)
         
         self.progress_bar = ctk.CTkProgressBar(
             self.progress_frame,
@@ -102,37 +89,14 @@ class QuestionFrame(ctk.CTkFrame):
         )
         self.check_button.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
         
-        # Explanation frame (initially hidden)
-        self.explanation_frame = ctk.CTkFrame(
-            self.main_frame,
-            fg_color=("#FFF4E6", "#3D2E1F"),
-            corner_radius=10,
-            border_width=1,
-            border_color=("#FFA500", "#8B6914")
-        )
-        self.explanation_frame.grid(row=4, column=0, padx=20, pady=(0, 20), sticky="ew")
-        self.explanation_frame.grid_columnconfigure(0, weight=1)
-        self.explanation_frame.grid_remove()  # Hide initially
-        
-        self.explanation_text = ctk.CTkTextbox(
-            self.explanation_frame,
-            font=ctk.CTkFont(size=14),
-            wrap="word",
-            fg_color="transparent",
-            text_color=("#664D03", "#FFE0B2"),
-            activate_scrollbars=False,
-            border_width=0,
-            height=60
-        )
-        self.explanation_text.grid(row=0, column=0, padx=15, pady=10, sticky="nsew")
-        
         # State variables
         self.answer_checked = False
         self.option_vars = []  # For radiobuttons or checkboxes
         self.option_buttons = []  # To store the actual button widgets
         self.option_labels = []  # Labels for option text (wrapping support)
         self.option_frames = []  # Frames wrapping each option
-        self.current_question_data = None  # Store current question for explanation
+        self.current_question_data = None
+        self._advance_ready = False
     
     def set_questions(self, questions):
         """Set the questions to be used in this frame."""
@@ -241,17 +205,14 @@ class QuestionFrame(ctk.CTkFrame):
         # Reset button state
         self.check_button.configure(text="Проверить ответ", state="normal")
         self.answer_checked = False
+        self._advance_ready = False
         
-        # Hide explanation
-        self.explanation_frame.grid_remove()
-        self.explanation_text.configure(state="normal")
-        self.explanation_text.delete("1.0", "end")
-        self.explanation_text.configure(state="disabled")
     
     def check_answer(self):
         """Check the user's answer and show result."""
         if self.answer_checked:
-            # If already checked, move to next question
+            if not self._advance_ready:
+                return
             self.current_question_index += 1
             self.load_question()
             return
@@ -281,6 +242,8 @@ class QuestionFrame(ctk.CTkFrame):
         # Update button text
         self.check_button.configure(text="Следующий вопрос", state="normal")
         self.answer_checked = True
+        self._advance_ready = False
+        self.after(500, lambda: setattr(self, '_advance_ready', True))
     
     def show_result(self, is_correct, question_data):
         """Show the result of the answer check."""
@@ -376,13 +339,6 @@ class QuestionFrame(ctk.CTkFrame):
         )
         self.feedback_label.grid(row=len(question_data['options']), column=0, padx=20, pady=10, sticky="ew")
         
-        # Show explanation
-        explanation = question_data['explanation']
-        self.explanation_text.configure(state="normal")
-        self.explanation_text.delete("1.0", "end")
-        self.explanation_text.insert("1.0", f"💡 {explanation}")
-        self.explanation_text.configure(state="disabled")
-        self.explanation_frame.grid(row=4, column=0, padx=20, pady=(0, 20), sticky="ew")
     
     def select_option(self, index):
         """Select/toggle the option at the given index via keyboard."""
@@ -404,20 +360,6 @@ class QuestionFrame(ctk.CTkFrame):
                 else:
                     var.set("")
 
-    def toggle_explanation(self, event=None):
-        """Toggle the explanation frame visibility."""
-        if self.current_question_data and 'explanation' in self.current_question_data:
-            self.explanation_text.configure(state="normal")
-            self.explanation_text.delete("1.0", "end")
-            self.explanation_text.insert("1.0", f"💡 {self.current_question_data['explanation']}")
-            self.explanation_text.configure(state="disabled")
-        
-        if self.explanation_frame.winfo_ismapped():
-            self.explanation_frame.grid_remove()
-        else:
-            self.explanation_frame.grid(row=4, column=0, padx=20, pady=(0, 20), sticky="ew")
-            self.explanation_frame.lift()
-    
     def get_score(self):
         """Calculate the current score."""
         if not self.questions:

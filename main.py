@@ -72,8 +72,6 @@ class HuntExamApp(ctk.CTk):
         # If showing question frame, load questions based on current mode and keep reference
         if frame_name == "QuestionFrame":
             qf = self.frames["QuestionFrame"]
-            self.bind("<Key-x>", lambda e: qf.toggle_explanation())
-            self.bind("<Key-X>", lambda e: qf.toggle_explanation())
             self.bind("<Return>", lambda e: qf.check_answer())
             self.bind("<KP_Enter>", lambda e: qf.check_answer())
             for i in range(1, 10):
